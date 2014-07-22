@@ -1,25 +1,7 @@
 {
-  "name": "grunt-cmd-concat",
-  "description": "Concatenate cmd files.",
+  "name": "grunt-antrol-concat",
+  "description": "Concatenate cmd files , Fork from grunt-cmd-concat",
   "version": "0.2.7",
-  "homepage": "https://github.com/spmjs/grunt-cmd-concat",
-  "author": {
-    "name": "Hsiaoming Yang",
-    "email": "lepture@me.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/spmjs/grunt-cmd-concat.git"
-  },
-  "bugs": {
-    "url": "https://github.com/spmjs/grunt-cmd-concat/issues"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/spmjs/grunt-cmd-concat/blob/master/LICENSE-MIT"
-    }
-  ],
   "main": "Gruntfile.js",
   "engines": {
     "node": ">= 0.8.0"
