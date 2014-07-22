@@ -63,7 +63,7 @@ exports.init = function(grunt) {
 
         options.paths.some(function(basedir) {
           var fpath = path.join(basedir, dep);
-          if (!/\.(?:css|js)$/.test(dep)) {
+          if (!/\.js$/.test(dep)) {
             fpath += '.js';
           }
           if (grunt.file.exists(fpath)) {
@@ -76,9 +76,6 @@ exports.init = function(grunt) {
           grunt.log.warn('file ' + dep + ' not found');
         } else {
           var data = grunt.file.read(fileInPaths);
-          if (/\.css$/.test(dep)) {
-            return options.css2js(data, dep, options);
-          }
           return data;
         }
       }
