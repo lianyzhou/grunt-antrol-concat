@@ -2,11 +2,21 @@ var path = require('path');
 var cmd = require('cmd-util');
 var ast = cmd.ast;
 var iduri = cmd.iduri;
+var RevvedFinder = require("./revvedfinder");
+
 
 exports.init = function(grunt) {
 
+  var finder = new RevvedFinder(function(p) {
+		return grunt.file.expand({
+			filter: 'isFile'
+		}, p);
+  });
+	
   var exports = {};
-
+  
+  var imgreg = /(?:url\(\s*)['"]?([^'"\)]+)['"]?\s*\)?/gm;
+  
   exports.jsConcat = function(fileObj, options) {
     var data = grunt.file.read(fileObj.src);
 
@@ -76,6 +86,22 @@ exports.init = function(grunt) {
           grunt.log.warn('file ' + dep + ' not found');
         } else {
           var data = grunt.file.read(fileInPaths);
+          data = data.replace(imgreg , function($0,$1) {
+          	  var result_src;
+          	  options.imageRoot.some(function(basedir) {
+	          	$1 = $1.replace(/^\// , '');
+	          	var result = finder.find($1 , basedir);
+	          	if(result !== $1) {
+	          		result_src = result;
+	          		return true;
+	          	}
+	          	return false;
+	          });
+          	  if(result_src) {
+          	  	return "url(/" + result_src + ")";
+          	  } 
+          	  return $0;
+          });
           return data;
         }
       }
