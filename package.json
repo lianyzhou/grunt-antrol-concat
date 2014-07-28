@@ -1,7 +1,7 @@
 {
   "name": "grunt-antrol-concat",
   "description": "Concatenate cmd files , Fork from grunt-cmd-concat",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "main": "Gruntfile.js",
   "engines": {
     "node": ">= 0.8.0"
