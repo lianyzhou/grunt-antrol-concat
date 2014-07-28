@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 
   var count = 0;
 
-  grunt.registerMultiTask('concat', 'concat cmd modules.', function() {
+  grunt.registerMultiTask('cmdconcat', 'concat cmd modules.', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
       separator: grunt.util.linefeed,
