@@ -8,11 +8,11 @@ var RevvedFinder = require("./revvedfinder");
 exports.init = function(grunt) {
 
   var finder = new RevvedFinder(function(p) {
-		return grunt.file.expand({
-			filter: 'isFile'
-		}, p);
+    return grunt.file.expand({
+      filter: 'isFile'
+    }, p);
   });
-	
+  
   var exports = {};
   
   var imgreg = /(?:url\(\s*)['"]?([^'"\)]+)['"]?\s*\)?/gm;
@@ -40,7 +40,7 @@ exports.init = function(grunt) {
       }
     }
 
-    var rv = meta.dependencies.map(function(dep) {
+    var defineList = meta.dependencies.map(function(dep) {
       if (dep.charAt(0) === '.') {
         var id = iduri.absolute(meta.id, dep);
         if (grunt.util._.contains(records, id)) {
@@ -87,27 +87,34 @@ exports.init = function(grunt) {
         } else {
           var data = grunt.file.read(fileInPaths);
           data = data.replace(imgreg , function($0,$1) {
-          	  var result_src;
-          	  options.imageRoot.some(function(basedir) {
-	          	$1 = $1.replace(/^\// , '');
-	          	var result = finder.find($1 , basedir);
-	          	if(result !== $1) {
-	          		result_src = result;
-	          		return true;
-	          	}
-	          	return false;
-	          });
-          	  if(result_src) {
-          	  	return "url(/" + result_src + ")";
-          	  } 
-          	  return $0;
+              var result_src;
+              options.imageRoot.some(function(basedir) {
+              $1 = $1.replace(/^\// , '');
+              var result = finder.find($1 , basedir);
+              if(result !== $1) {
+                result_src = result;
+                return true;
+              }
+              return false;
+            });
+              if(result_src) {
+                return "url(/" + result_src + ")";
+              } 
+              return $0;
           });
           return data;
         }
       }
       return '';
-    }).join(grunt.util.normalizelf(options.separator));
-    return [data, rv].join(grunt.util.normalizelf(options.separator));
+    });
+
+    if(options.split.turnOn) {
+      defineList.unshift(data);
+      return defineList;
+    } else {
+      defineList.unshift(data);
+      return defineList.join(grunt.util.normalizelf(options.separator));
+    }
   };
 
   return exports;

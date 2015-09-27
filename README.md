@@ -119,6 +119,18 @@ grunt.initConfig({
 });
 ```
 
+#### options.split
+
+Type: `Object`
+Default Value:
+```js
+{
+  turnOn:false,
+  limit:100
+}
+```
+if you want to split concated files into small pieces,put split.turnOn=true,and set split.limit , for example limit:100 means that when exceeds 100KB,it will create a file,if original file is home.js , it will create home1.js,home2.js,...,homex.js,etc.
+
 
 ### Usage Examples
 
