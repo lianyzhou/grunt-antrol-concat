@@ -41,9 +41,26 @@ module.exports = function(grunt) {
         //开关
         turnOn:false,
         //单个文件大小限制
-        limit : 50
+        limit : 50,
+        //忽略列表  字符串或数组，要忽略，不进行split的路径
+        exclude : null
       }
     });
+    //忽略列表数组
+    var excludeList = options.split.exclude;
+    if(typeof excludeList === 'string') {
+        excludeList = [excludeList];
+    }
+    //是否是要忽略的路径
+    function isExcludePath(p) {
+        if(!excludeList) {return false;}
+        for(var i = 0, len = excludeList.length ; i < len ; i++) {
+            if(p.indexOf(excludeList[i]) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
     //如果是优化存储，使用自定义的方法
     if(options.split.turnOn) {
       //对每一个文件都进行该操作
@@ -74,6 +91,8 @@ module.exports = function(grunt) {
             var defineItems = processor({src: entryPath}, options);
             //对字节大小进行处理的临时变量
             var fileOutputList = [], sum = 0, oneFileList = [];
+            //是否要进行忽略
+            var exclude = isExcludePath(entryPath);
             //对每一个define进行字节计算
             defineItems.forEach(function(str) {
               //seajs中的处理，对引用路径进行处理 开始
@@ -102,7 +121,8 @@ module.exports = function(grunt) {
               //seajs中的处理，对引用路径进行处理 结束
 
               sum += Buffer.byteLength(str);
-              if(sum >= limit) {
+
+              if(!exclude && sum >= limit) {
                 oneFileList.push(str);
                 var fileContent = oneFileList.join(grunt.util.normalizelf(options.separator));
                 fileOutputList.push(options.banner + fileContent + options.footer);
@@ -124,7 +144,11 @@ module.exports = function(grunt) {
             var basename = path.basename(f.dest);
             var baseNamePre = basename.replace(/\.js$/,"");
             fileOutputList.forEach(function(fileContent , i) {
-              grunt.file.write(path.resolve(pathPre , baseNamePre + (i + 1) + ".js"), fileContent);
+                grunt.file.write(
+
+                    exclude ?  f.dest : path.resolve(pathPre , baseNamePre + (i + 1) + ".js"),
+
+                    fileContent);
             });
           } else {
             //css不支持split模式，我们项目中也不使用css的import
