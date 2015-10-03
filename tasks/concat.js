@@ -41,7 +41,7 @@ module.exports = function(grunt) {
         //开关
         turnOn:false,
         //单个文件大小限制
-        limit : 0
+        limit : 50
       }
     });
     //如果是优化存储，使用自定义的方法
@@ -112,6 +112,13 @@ module.exports = function(grunt) {
                 oneFileList.push(str);
               }
             });
+            //所有文件加起来，没有超过limit，则也写入文件中
+            if(oneFileList.length) {
+                var fileContent = oneFileList.join(grunt.util.normalizelf(options.separator));
+                fileOutputList.push(options.banner + fileContent + options.footer);
+                sum = 0;
+                oneFileList = [];
+            }
             //将最终结果写入到文件中
             var pathPre = path.dirname(f.dest);
             var basename = path.basename(f.dest);
