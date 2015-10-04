@@ -126,10 +126,13 @@ Default Value:
 ```js
 {
   turnOn:false,
-  limit:100
+  limit:100，
+  exlucde:null
 }
 ```
 if you want to split concated files into small pieces,put split.turnOn=true,and set split.limit , for example limit:100 means that when exceeds 100KB,it will create a file,if original file is home.js , it will create home1.js,home2.js,...,homex.js,etc.
+
+if you have some async files you do not want to use for split , you can specify them by exclude param ， for example , exclude : '/async/', so if the file path includes async , it will not split.
 
 
 ### Usage Examples

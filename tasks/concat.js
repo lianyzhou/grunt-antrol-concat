@@ -85,6 +85,7 @@ module.exports = function(grunt) {
           if (!processor || options.noncmd) {
             return grunt.file.read(entryPath);
           }
+
           //如果是js处理器，进行文件分割
           if(extname === '.js') {
             //获取到define的数组，每一个是一个define
@@ -95,31 +96,6 @@ module.exports = function(grunt) {
             var exclude = isExcludePath(entryPath);
             //对每一个define进行字节计算
             defineItems.forEach(function(str) {
-              //seajs中的处理，对引用路径进行处理 开始
-              if (!options.noncmd) {
-                var astCache = ast.getAst(str);
-                var idGallery = ast.parse(astCache).map(function(o) {
-                  return o.id;
-                });
-
-                str = ast.modify(astCache, {
-                  dependencies: function(v) {
-                    if (v.charAt(0) === '.') {
-                      var altId = iduri.absolute(idGallery[0], v);
-                      if (grunt.util._.contains(idGallery, altId)) {
-                        return v;
-                      }
-                    }
-                    var ext = path.extname(v);
-                    // remove useless dependencies
-                    if (ext && /\.(?:html|txt|tpl|handlebars|css)$/.test(ext)) return null;
-
-                    return v;
-                  }
-                }).print_to_string(options.uglify);
-              }
-              //seajs中的处理，对引用路径进行处理 结束
-
               sum += Buffer.byteLength(str);
 
               if(!exclude && sum >= limit) {
